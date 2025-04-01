@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Prediction</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .weather-container {
+            background-color: rgb(20, 155, 144);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #weather-results {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="weather-container">
+        <h1>Weather Prediction</h1>
+        <input type="text" id="cityInput" placeholder="Enter city">
+        <button onclick="getWeather()">Get Weather</button>
+        <div id="weather-results"></div>
+    </div>
+
+    <script>
+        function getWeather() {
+            const city = document.getElementById("cityInput").value;
+            let apiKey = "047b3616b9d6acc3f66939c97a82dfac";  // Your actual API key
+            let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.cod === '404') {
+                        document.getElementById("weather-results").innerHTML = "City not found.";
+                    } else {
+                        const temperature = data.main.temp;
+                        const description = data.weather[0].description;
+                        const humidity = data.main.humidity;
+                        const windSpeed = data.wind.speed;
+
+                        const resultsHtml = `
+                            <h2>${city} Weather</h2>
+                            <p>Temperature: ${temperature}°C</p>
+                            <p>Description: ${description}</p>
+                            <p>Humidity: ${humidity}%</p>
+                            <p>Wind Speed: ${windSpeed} m/s</p>
+                        `;
+                        document.getElementById("weather-results").innerHTML = resultsHtml;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching weather data:", error);
+                    document.getElementById("weather-results").innerHTML = "Failed to fetch weather data.";
+                });
+        }
+    </script>
+</body>
+</html>
